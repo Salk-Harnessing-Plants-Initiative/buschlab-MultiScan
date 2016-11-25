@@ -37,7 +37,7 @@ public class UsbConfig extends Thread{
 	private PropertyChangeSupport monitoring;
 	private PropertyChangeSupport cfgChanged;
 	
-	public UsbConfig(String cfgPath){
+	public UsbConfig(File cfgFile){
 //		this.log=log;
 		usbDevices=new ArrayList<List<String>>();
 		scanDevices=new ArrayList<Integer>();
@@ -46,7 +46,7 @@ public class UsbConfig extends Thread{
 		
 		cfgChanged=new PropertyChangeSupport(this);
 		monitoring=new PropertyChangeSupport(this);
-		readUsbConfig(cfgPath);
+		readUsbConfig(cfgFile);
 		if(scannerAssignment==null){
 			setDefaultConfig();
 		}
@@ -203,13 +203,11 @@ public class UsbConfig extends Thread{
 		}
 	}
 	
-	public void readUsbConfig(String path){
-		File file=new File(path);
-		
+	public void readUsbConfig(File file){
 		scannerAssignment=new HashMap<String,Integer>();
 
 		BufferedReader br=null;
-		String logStr="searching for usb configuration file: '"+path+System.getProperty("line.separator");
+		String logStr="searching for usb configuration file: '"+file.getAbsolutePath()+System.getProperty("line.separator");
 		
 		try{
 			FileReader fr=new FileReader(file);

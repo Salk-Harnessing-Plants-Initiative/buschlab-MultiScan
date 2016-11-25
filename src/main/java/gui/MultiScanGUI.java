@@ -34,7 +34,7 @@ public class MultiScanGUI {
 	private int nextPlateNr;
 	
 	private UsbConfig usbCfg;
-	private String cfgPath;
+	private File cfgFile;
 	final private String newline=System.getProperty("line.separator");
 	private JFrame frame;
 	private JTextArea logArea;
@@ -51,7 +51,7 @@ public class MultiScanGUI {
 	/**
 	 * Create the application.
 	 */
-	public MultiScanGUI(String cfgPath) {
+	public MultiScanGUI(File cfgFile) {
 		//			// look and feel
 		//			try {
 		//				// Set System L&F
@@ -71,7 +71,7 @@ public class MultiScanGUI {
 		//				// handle exception
 		//			}
 		//			
-		this.cfgPath=cfgPath;
+		this.cfgFile=cfgFile;
 		this.nextPlateNr=1;
 		this.scannerPanels=new ArrayList<ScannerPanel>();
 
@@ -286,7 +286,7 @@ public class MultiScanGUI {
 	
 	
 	private void dispatcher(){
-		usbCfg=new UsbConfig(cfgPath);
+		usbCfg=new UsbConfig(cfgFile);
 		for(int i=0;i<2;++i){
 			if(!usbCfg.rowEnabled(i)){
 				chkRow[i].setSelected(false);
@@ -346,7 +346,7 @@ public class MultiScanGUI {
 
 					Thread.sleep(300);
 					
-					usbCfg=new UsbConfig(cfgPath);
+					usbCfg=new UsbConfig(cfgFile);
 					usbCfg.addMonitorListener(new PropertyChangeHandler());
 					usbCfg.addConfigListener(new PropertyChangeHandler());
 					usbCfg.start();
