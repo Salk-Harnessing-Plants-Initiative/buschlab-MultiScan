@@ -1,22 +1,27 @@
 import gui.MultiScanGUI;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 
 public class MultiScan {
 
 	public static void main(String[] args){
-		File cfgFile=null;
+//		File cfgFile=null;
+		InputStream cfgStream = null;
 		if(args.length==0) {
-			try {
-				cfgFile = new File(MultiScan.class.getClassLoader().getResource("multiscan.cfg").toURI());
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
+				cfgStream = MultiScan.class.getClassLoader().getResourceAsStream("multiscan.cfg");
 		}
 		else {
-			cfgFile = new File(args[0]);
+			try {
+				cfgStream = new FileInputStream(args[0]);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+//			cfgFile = new File(args[0]);
 		}
-		MultiScanGUI gui=new MultiScanGUI(cfgFile);
+		MultiScanGUI gui=new MultiScanGUI(cfgStream);
 	}
 }

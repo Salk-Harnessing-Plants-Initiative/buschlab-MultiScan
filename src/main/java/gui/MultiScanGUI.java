@@ -16,6 +16,7 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
@@ -34,7 +35,7 @@ public class MultiScanGUI {
 	private int nextPlateNr;
 	
 	private UsbConfig usbCfg;
-	private File cfgFile;
+	private InputStream cfgStream;
 	final private String newline=System.getProperty("line.separator");
 	private JFrame frame;
 	private JTextArea logArea;
@@ -51,7 +52,7 @@ public class MultiScanGUI {
 	/**
 	 * Create the application.
 	 */
-	public MultiScanGUI(File cfgFile) {
+	public MultiScanGUI(InputStream cfgStream) {
 		//			// look and feel
 		//			try {
 		//				// Set System L&F
@@ -71,7 +72,7 @@ public class MultiScanGUI {
 		//				// handle exception
 		//			}
 		//			
-		this.cfgFile=cfgFile;
+		this.cfgStream =cfgStream;
 		this.nextPlateNr=1;
 		this.scannerPanels=new ArrayList<ScannerPanel>();
 
@@ -105,7 +106,7 @@ public class MultiScanGUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initializeFrame(){
-		frame = new JFrame("MultiScan V1.1");
+		frame = new JFrame("MultiScan V1.2");
 		frame.setBounds(100, 100, 700, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
@@ -286,7 +287,7 @@ public class MultiScanGUI {
 	
 	
 	private void dispatcher(){
-		usbCfg=new UsbConfig(cfgFile);
+		usbCfg=new UsbConfig(cfgStream);
 		for(int i=0;i<2;++i){
 			if(!usbCfg.rowEnabled(i)){
 				chkRow[i].setSelected(false);
@@ -346,7 +347,7 @@ public class MultiScanGUI {
 
 					Thread.sleep(300);
 					
-					usbCfg=new UsbConfig(cfgFile);
+					usbCfg=new UsbConfig(cfgStream);
 					usbCfg.addMonitorListener(new PropertyChangeHandler());
 					usbCfg.addConfigListener(new PropertyChangeHandler());
 					usbCfg.start();

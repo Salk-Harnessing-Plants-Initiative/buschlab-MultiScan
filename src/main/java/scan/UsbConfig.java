@@ -3,12 +3,7 @@ package scan;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +32,7 @@ public class UsbConfig extends Thread{
 	private PropertyChangeSupport monitoring;
 	private PropertyChangeSupport cfgChanged;
 	
-	public UsbConfig(File cfgFile){
+	public UsbConfig(InputStream cfgStream){
 //		this.log=log;
 		usbDevices=new ArrayList<List<String>>();
 		scanDevices=new ArrayList<Integer>();
@@ -46,7 +41,7 @@ public class UsbConfig extends Thread{
 		
 		cfgChanged=new PropertyChangeSupport(this);
 		monitoring=new PropertyChangeSupport(this);
-		readUsbConfig(cfgFile);
+		readUsbConfig(cfgStream);
 		if(scannerAssignment==null){
 			setDefaultConfig();
 		}
@@ -203,15 +198,14 @@ public class UsbConfig extends Thread{
 		}
 	}
 	
-	public void readUsbConfig(File file){
+	public void readUsbConfig(InputStream cfgStream){
 		scannerAssignment=new HashMap<String,Integer>();
 
 		BufferedReader br=null;
-		String logStr="searching for usb configuration file: '"+file.getAbsolutePath()+System.getProperty("line.separator");
+		String logStr="searching for usb configuration: '"+System.getProperty("line.separator");
 		
 		try{
-			FileReader fr=new FileReader(file);
-			br=new BufferedReader(fr);
+			br=new BufferedReader(new InputStreamReader(cfgStream));
 
 			String line;
 			while((line=br.readLine())!=null){
@@ -276,12 +270,12 @@ public class UsbConfig extends Thread{
 			}
 		}
 		catch (FileNotFoundException e) {
-			logStr+="    file not found!"+System.getProperty("line.separator");
+			logStr+="    configuration not found!"+System.getProperty("line.separator");
 			logStr+="    using default config."+System.getProperty("line.separator");
 			scannerAssignment=null;
 		}
 		catch (IOException e) {
-			logStr+="    error reading file!"+System.getProperty("line.separator");
+			logStr+="    error reading configuration!"+System.getProperty("line.separator");
 			logStr+="    using default config."+System.getProperty("line.separator");
 			scannerAssignment=null;
 		}
